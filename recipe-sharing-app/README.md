@@ -1,16 +1,103 @@
-# React + Vite
+# Recipe Sharing Application
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A recipe sharing platform built with React and Zustand for state management.  
+This project includes recipe creation, editing, deleting, searching, filtering, and detailed viewing.  
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Features
 
-## React Compiler
+### Frontend (React + Zustand)
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- Add, edit, delete recipes
+- Search recipes by title, description, or ingredients
+- Filter recipes by maximum prep time
+- View detailed recipe pages
+- Route-based navigation using React Router
+- Global state persisted through Zustand
+- Tailwind CSS responsive UI
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Tech Stack
+
+### Frontend
+
+- React (Vite)
+- Zustand
+- React Router DOM
+- Axios
+- Tailwind CSS
+
+## Installation
+
+### Clone the repository
+
+```bash
+git clone https://github.com/yourusername/alx-fe-reactjs.git
+cd alx-fe-reactjs/recipe-sharing-app
+```
+
+---
+
+## Frontend Setup
+
+```bash
+npm create vite@latest recipe-sharing-app
+npm install zustand
+npm install -D tailwindcss postcss autoprefixer
+npx tailwindcss init -p
+```
+
+### Tailwind Setup
+
+`tailwind.config.js`
+
+```bash
+export default {
+content: ["./index.html", "./src/**/*.{js,jsx}"],
+theme: {
+extend: {},
+},
+plugins: [],
+}
+```
+
+`src/index.css`
+
+```bash
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+```
+
+### Start the frontend
+
+`npm run dev`
+
+---
+
+## Project Structure
+
+```bash
+src/
+    components/
+        AddRecipeForm.jsx
+        DeleteRecipeButton.jsx
+        EditRecipeForm.jsx
+        FvoritesList.jsx
+        RecipeDetails.jsx
+        RecipeList.jsx
+        recipeStore.js
+        RecommendationsList.jsx
+        SearchBar.jsx
+App.jsx
+main.jsx
+```
+
+---
+
+## Author
+
+ALX Frontend ReactJS Project  
+Motolani Alebiosu
