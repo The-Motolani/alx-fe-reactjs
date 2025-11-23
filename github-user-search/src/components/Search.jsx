@@ -1,115 +1,84 @@
-import { useState } from "react";
-import { fetchUserData } from "../services/githubService";
+// src/components/Search.jsx
+import React, { useState } from 'react';
+import { fetchUserData } from '../services/githubService'; // Import the fetchUserData function
 
-function Search() {
-  const [username, setUsername] = useState("");
-  const [location, setLocation] = useState("");
-  const [minRepos, setMinRepos] = useState("");
-  const [results, setResults] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [errorMsg, setErrorMsg] = useState("");
+const Search = () => {
+  const [username, setUsername] = useState(''); // State for search input
+  const [userData, setUserData] = useState(null); // State for user data
+  const [loading, setLoading] = useState(false); // State for loading status
+  const [error, setError] = useState(''); // State for error messages
 
-  let debounceTimer;
+  // Handle search input change
+  const handleInputChange = (e) => {
+    setUsername(e.target.value);
+  };
 
-  async function handleSearch(e) {
+  // Handle form submission (search)
+  const handleSearch = async (e) => {
     e.preventDefault();
-
-    if (debounceTimer) clearTimeout(debounceTimer);
-    debounceTimer = setTimeout(async () => {
-      setLoading(true);
-      setErrorMsg("");
-      setResults([]);
-
-      const response = await fetchUserData(username, location, minRepos);
-
-      if (response.error || !response.data.length) {
-        setErrorMsg("Looks like we cant find the user.");
-      } else {
-        setResults(response.data);
-      }
-
+    setLoading(true);
+    setError('');
+    try {
+      const result = await fetchUserData(username);
+      setUserData(result); // Set user data in state
+    } catch (err) {
+      setError('Looks like we cant find the user');
+    } finally {
       setLoading(false);
-    }, 300); // 300ms debounce
-  }
+    }
+  };
 
   return (
-    <div className="max-w-xl mx-auto p-6">
-      <h2 className="text-2xl font-semibold mb-4 text-center">
-        Advanced GitHub User Search
-      </h2>
-
-      <form
-        onSubmit={handleSearch}
-        className="space-y-3 bg-gray-100 p-4 rounded-lg shadow-md"
-      >
+    <div>
+      <form onSubmit={handleSearch} className="mb-4">
         <input
           type="text"
-          placeholder="Username..."
           value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+          onChange={handleInputChange}
+          placeholder="Search GitHub user"
+          className="border px-2 py-1"
         />
-
-        <input
-          type="text"
-          placeholder="Location..."
-          value={location}
-          onChange={(e) => setLocation(e.target.value)}
-          className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
-        />
-
-        <input
-          type="number"
-          placeholder="Minimum Repos..."
-          value={minRepos}
-          onChange={(e) => setMinRepos(e.target.value)}
-          className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
-        />
-
-        <button
-          type="submit"
-          className="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700 transition-colors duration-200"
-        >
+        <button type="submit" className="ml-2 bg-blue-500 text-white px-4 py-1">
           Search
         </button>
       </form>
 
-      {loading && <p className="text-center mt-3 text-gray-700">Loading...</p>}
+      {loading && <p>Loading...</p>} {/* Show loading message while fetching data */}
+      {error && <p>{error}</p>} {/* Show error message if user is not found */}
 
-      {errorMsg && <p className="text-red-500 text-center mt-3">{errorMsg}</p>}
+      {/* Display user data if available */}
+      {userData && !loading && !error && (
+        <div className="user-result">
+          <img src={userData.avatar_url} alt="User Avatar" className="w-24 h-24" />
+          <h2 className="text-xl">{userData.login}</h2>
+          <p>{userData.name}</p>
+          <p>{userData.location}</p>
+          <p>Repos: {userData.public_repos}</p>
+          <a href={userData.html_url} target="_blank" rel="noopener noreferrer">
+            View Profile
+          </a>
+        </div>
+      )}
 
-      <div className="mt-6 grid gap-4 sm:grid-cols-1 md:grid-cols-2">
-        {results.map((user) => (
-          <div
-            key={user.id}
-            className="p-4 border rounded flex items-center gap-4 bg-white shadow-sm hover:shadow-md transition-shadow duration-200"
-          >
-            <img
-              src={user.avatar_url}
-              alt={`${user.login}'s avatar`}
-              className="w-16 h-16 rounded-full flex-shrink-0"
-              loading="lazy"
-            />
-
-            <div className="flex flex-col">
-              <h3 className="font-semibold">{user.login}</h3>
-              {user.location && (
-                <span className="text-gray-500 text-sm">{user.location}</span>
-              )}
-              <a
-                href={user.html_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-500 underline mt-1"
-              >
+      {/* If multiple results are found (for advanced search), display them using .map() */}
+      {userData && Array.isArray(userData) && (
+        <div className="user-list">
+          {userData.map((user) => (
+            <div key={user.id} className="user-card mb-4 p-4 border">
+              <img src={user.avatar_url} alt="User Avatar" className="w-24 h-24" />
+              <h3 className="text-lg">{user.login}</h3>
+              <p>{user.name}</p>
+              <p>{user.location}</p>
+              <p>Repos: {user.public_repos}</p>
+              <a href={user.html_url} target="_blank" rel="noopener noreferrer">
                 View Profile
               </a>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
-}
+};
 
 export default Search;
