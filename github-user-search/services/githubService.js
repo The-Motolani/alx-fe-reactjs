@@ -1,19 +1,14 @@
-import axios from 'axios';
+import axios from "axios";
 
-export const fetchUserData = async (username, location, minRepos) => {
-    // eslint-disable-next-line no-useless-catch
-    try {
-        let query = username ? `user:${username}` : ''; 
-        if (location) {
-            query += ` location:${location}`; 
-        }
-        if (minRepos) {
-            query += ` repos:>${minRepos}`; 
-        }
+const BASE_URL = "https://api.github.com";
+const TOKEN = import.meta.env.VITE_APP_GITHUB_API_KEY;
 
-        const response = await axios.get(`https://api.github.com/search/users?q=${query}`);
-        return response.data.items;
-    } catch (error) {
-        throw error; 
-    }
+export const fetchUserData = async (username) => {
+  const response = await axios.get(`${BASE_URL}/users/${username}`, {
+    headers: {
+      Authorization: TOKEN ? `token ${TOKEN}` : "",
+    },
+  });
+
+  return response.data;
 };
