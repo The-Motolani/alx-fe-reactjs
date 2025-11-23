@@ -1,33 +1,22 @@
-import axios from 'axios';
+import axios from "axios";
 
-const GITHUB_BASE = 'https://api.github.com';
-const token = import.meta.env.VITE_APP_GITHUB_API_KEY || '';
+const BASE_URL = "https://api.github.com/search/users?q=";
 
-const axiosInstance = axios.create({
-  baseURL: GITHUB_BASE,
-  headers: token ? { Authorization: `token ${token}` } : undefined,
-});
+export async function fetchUserData(username, location, minRepos) {
+  try {
+    let query = "";
 
-/**
- * Fetch single user profile by username
- * @param {string} username
- */
-export async function fetchUserData(username) {
-  const response = await axiosInstance.get(`/users/${username}`);
-  return response.data;
-}
-export async function searchUsers(queryObj = {}) {
-  const { q = '', location, minRepos, page = 1, per_page = 30 } = queryObj;
+    if (username) query += username;
+    if (location) query += `location:${location}`;
+    if (minRepos) query += `repos:>${minRepos}`;
 
-  let qualifiers = [];
-
-  if (location) qualifiers.push(`location:${location}`);
-  if (Number.isFinite(minRepos)) qualifiers.push(`repo:>=${minRepos}`);
-
-  const fullQuery = [q, ...qualifiers].filter(Boolean).join('+');
-  const url = `/search/users?q=${encodeURIComponent(fullQuery)}&page=${page}&per_page=${per_page}`;
-
-  const resp = await axiosInstance.get(url);
-  
-  return resp.data;
+    const response = await axios.get(BASE_URL + query, {
+      headers: {
+        Authorization: `Bearer ${import.meta.env.VITE_APP_GITHUB_API_KEY}`,
+      },
+    });
+    return { data: response.data.items, error: null };
+  } catch (error) {
+    return { data: null, error: "Search failed" };
+  }
 }

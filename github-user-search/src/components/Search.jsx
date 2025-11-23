@@ -1,154 +1,115 @@
-import React, { useState } from 'react';
+import { useState } from "react";
 import { fetchUserData } from "../services/githubService";
 
-export default function Search() {
-  // basic single-user state
-  const [username, setUsername] = useState('');
-  const [userResult, setUserResult] = useState(null);
-
-  // advanced search state
-  const [advQuery, setAdvQuery] = useState('');
-  const [location, setLocation] = useState('');
-  const [minRepos, setMinRepos] = useState('');
-  const [searchResults, setSearchResults] = useState([]);
-
-  // UI state
+function Search() {
+  const [username, setUsername] = useState("");
+  const [location, setLocation] = useState("");
+  const [minRepos, setMinRepos] = useState("");
+  const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [errorMsg, setErrorMsg] = useState("");
 
-  // single user submit
-  const handleLookup = async (event) => {
-    event.preventDefault();
-    setError('');
-    setUserResult(null);
-    if (!username.trim()) return setError('Looks like we cant find the user'); // guard
+  let debounceTimer;
 
-    setLoading(true);
-    try {
-      const data = await fetchUserData(username.trim());
-      setUserResult(data);
-    } catch (err) {
-      setError('Looks like we cant find the user');
-    } finally {
-      setLoading(false);
-    }
-  };
+  async function handleSearch(e) {
+    e.preventDefault();
 
-  // advanced search submit
-  const handleAdvancedSearch = async (event) => {
-    event.preventDefault();
-    setError('');
-    setSearchResults([]);
-    setLoading(true);
+    if (debounceTimer) clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(async () => {
+      setLoading(true);
+      setErrorMsg("");
+      setResults([]);
 
-    try {
-      const qObj = {
-        q: advQuery.trim(),
-        location: location.trim() || undefined,
-        minRepos: minRepos ? Number(minRepos) : undefined,
-        page: 1,
-        per_page: 30,
-      };
-      const data = await searchUs
-      ers(qObj);
-      setSearchResults(data.items || []);
-      if (!data.items || data.items.length === 0) {
-        setError('Looks like we cant find the user');
+      const response = await fetchUserData(username, location, minRepos);
+
+      if (response.error || !response.data.length) {
+        setErrorMsg("Looks like we cant find the user.");
+      } else {
+        setResults(response.data);
       }
-    } catch (err) {
-      setError('Looks like we cant find the user');
-    } finally {
+
       setLoading(false);
-    }
-  };
+    }, 300); // 300ms debounce
+  }
 
   return (
-    <div className="space-y-6">
-      {/* Single user lookup */}
-      <section className="p-4 border rounded bg-white">
-        <h2 className="text-xl font-medium mb-3">Find a GitHub user</h2>
-        <form onSubmit={handleLookup} className="flex gap-2">
-          <input
-            value={username}
-            onChange={(event) => setUsername(event.target.value)}
-            placeholder="Enter username (e.g. torvalds)"
-            className="flex-1 p-2 border rounded"
-          />
-          <button type="submit" className="px-4 py-2 border rounded">
-            Search
-          </button>
-        </form>
+    <div className="max-w-xl mx-auto p-6">
+      <h2 className="text-2xl font-semibold mb-4 text-center">
+        Advanced GitHub User Search
+      </h2>
 
-        {loading && <p className="mt-3">Loading...</p>}
-        {error && <p className="mt-3 text-red-600">{error}</p>}
+      <form
+        onSubmit={handleSearch}
+        className="space-y-3 bg-gray-100 p-4 rounded-lg shadow-md"
+      >
+        <input
+          type="text"
+          placeholder="Username..."
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+        />
 
-        {userResult && !loading && (
-          <div className="mt-4 flex gap-4 items-center">
-            <img src={userResult.avatar_url} alt="avatar" className="w-20 h-20 rounded-full" />
-            <div>
-              <div className="font-semibold">{userResult.name || userResult.login}</div>
+        <input
+          type="text"
+          placeholder="Location..."
+          value={location}
+          onChange={(e) => setLocation(e.target.value)}
+          className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+        />
+
+        <input
+          type="number"
+          placeholder="Minimum Repos..."
+          value={minRepos}
+          onChange={(e) => setMinRepos(e.target.value)}
+          className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+        />
+
+        <button
+          type="submit"
+          className="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700 transition-colors duration-200"
+        >
+          Search
+        </button>
+      </form>
+
+      {loading && <p className="text-center mt-3 text-gray-700">Loading...</p>}
+
+      {errorMsg && <p className="text-red-500 text-center mt-3">{errorMsg}</p>}
+
+      <div className="mt-6 grid gap-4 sm:grid-cols-1 md:grid-cols-2">
+        {results.map((user) => (
+          <div
+            key={user.id}
+            className="p-4 border rounded flex items-center gap-4 bg-white shadow-sm hover:shadow-md transition-shadow duration-200"
+          >
+            <img
+              src={user.avatar_url}
+              alt={`${user.login}'s avatar`}
+              className="w-16 h-16 rounded-full flex-shrink-0"
+              loading="lazy"
+            />
+
+            <div className="flex flex-col">
+              <h3 className="font-semibold">{user.login}</h3>
+              {user.location && (
+                <span className="text-gray-500 text-sm">{user.location}</span>
+              )}
               <a
-                href={userResult.html_url}
+                href={user.html_url}
                 target="_blank"
-                rel="noreferrer"
-                className="text-sm text-blue-600"
+                rel="noopener noreferrer"
+                className="text-blue-500 underline mt-1"
               >
-                View profile
+                View Profile
               </a>
             </div>
           </div>
-        )}
-      </section>
-
-      {/* Advanced search */}
-      <section className="p-4 border rounded bg-white">
-        <h2 className="text-xl font-medium mb-3">Advanced search</h2>
-        <form onSubmit={handleAdvancedSearch} className="grid grid-cols-1 gap-3">
-          <input
-            value={advQuery}
-            onChange={(e) => setAdvQuery(e.target.value)}
-            placeholder="Username or keywords"
-            className="p-2 border rounded"
-          />
-          <div className="flex gap-2">
-            <input
-              value={location}
-              onChange={(e) => setLocation(e.target.value)}
-              placeholder="Location (city/country)"
-              className="flex-1 p-2 border rounded"
-            />
-            <input
-              value={minRepos}
-              onChange={(e) => setMinRepos(e.target.value)}
-              placeholder="Min repos"
-              type="number"
-              className="w-32 p-2 border rounded"
-            />
-            <button type="submit" className="px-4 py-2 border rounded">
-              Search
-            </button>
-          </div>
-        </form>
-
-        {loading && <p className="mt-3">Loading...</p>}
-        {error && !loading && <p className="mt-3 text-red-600">{error}</p>}
-
-        {searchResults && searchResults.length > 0 && (
-          <ul className="mt-4 space-y-3">
-            {searchResults.map((u) => (
-              <li key={u.id} className="p-3 border rounded flex items-center gap-3 bg-gray-50">
-                <img src={u.avatar_url} alt={u.login} className="w-12 h-12 rounded-full" />
-                <div>
-                  <div className="font-medium">{u.login}</div>
-                  <a href={u.html_url} target="_blank" rel="noreferrer" className="text-sm text-blue-600">
-                    View profile
-                  </a>
-                </div>
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
+        ))}
+      </div>
     </div>
   );
 }
+
+export default Search;
