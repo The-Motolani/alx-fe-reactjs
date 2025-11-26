@@ -8,8 +8,7 @@ export default function AddRecipeForm() {
   const [description, setDescription] = useState("");
   const [ingredients, setIngredients] = useState("");
   const [prepTime, setPrepTime] = useState("");
-
-  const submit = async (e) => {
+  async function HandleSubmit(e) {
     e.preventDefault();
     await addRecipe({
       title,
@@ -18,11 +17,11 @@ export default function AddRecipeForm() {
       prep_time: prepTime ? Number(prepTime) : null,
     });
     setTitle(""); setDescription(""); setIngredients(""); setPrepTime("");
-  };
+  }
 
   return (
     <form
-      onSubmit={submit}
+      onSubmit={HandleSubmit}
       className="bg-white p-6 rounded border shadow mb-6 space-y-4"
     >
       <h2 className="text-xl font-semibold">Add Recipe</h2>
