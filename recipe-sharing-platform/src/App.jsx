@@ -1,11 +1,11 @@
 import './index.css'
-import Homepage from './components/Homepage'
+import HomePage from './components/Homepage'
 
 function App() {
 
   return (
     <>
-     <Homepage />
+     <HomePage />
     </>
   )
 }

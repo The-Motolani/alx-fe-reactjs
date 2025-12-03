@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 
 
-export default function Homepage() {
+export default function HomePage() {
 const [recipes, setRecipes] = useState([]);
 
 useEffect(() => {
-    fetch("./data.json")
+    fetch('../data.json')
     .then((response) => response.json())
     .then((data) => setRecipes(data))
     .catch((error) => console.log('Error loading recipe data:', error));
