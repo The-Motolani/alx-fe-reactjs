@@ -8,7 +8,7 @@ useEffect(() => {
     fetch("./data.json")
     .then((response) => response.json())
     .then((data) => setRecipes(data))
-    .catch((error) => console.log('Error loadinf recipe data:', error));
+    .catch((error) => console.log('Error loading recipe data:', error));
 }, []
 );
 
