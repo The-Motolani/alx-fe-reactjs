@@ -26,7 +26,7 @@ export default function RecipeDetail() {
      
       
        <div className="min-h-screen bg-gray-100 p-5 flex justify-between">
-      <div className="bg-white max-w-3xl w-full rounded-lg p-6">
+      <div className="bg-white max-w-3xl w-full rounded-lg p-6 shadow-xl">
         <img
           src={recipes.image}
           alt={recipes.title}
