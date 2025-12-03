@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 
 import recipesData from "../data.json"
 
@@ -31,10 +32,10 @@ useEffect(() => {
                         />
                         <h2 className="text-xl font-semibold mb-2">{recipe.title}</h2>
                     <p className="text-gray-600 text-sm">{recipe.summary}</p>
-                    <a href={`/recipe/${recipe.id}`}
+                    <Link to={`/recipe/${recipe.id}`}
                     className="inline-block mt-3 text-blue-600 font-medium hover:underline"
                     >View Details
-                    </a>
+                    </Link>
                     </motion.div>
                     
                 ))}
