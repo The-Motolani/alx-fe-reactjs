@@ -1,14 +1,13 @@
 import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 
+import recipesData from "../data.json"
 
 export default function HomePage() {
 const [recipes, setRecipes] = useState([]);
 
 useEffect(() => {
-    fetch('../data.json')
-    .then((response) => response.json())
-    .then((data) => setRecipes(data))
-    .catch((error) => console.log('Error loading recipe data:', error));
+    setRecipes(recipesData)
 }, []
 );
 
@@ -18,7 +17,7 @@ useEffect(() => {
             <h1 className="text-3xl font-bold text-center mb-8">
                 Recipe Sharing Platform
             </h1>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
                 {recipes.map((recipe) => (
                     <motion.div
                     key={recipe.id}
