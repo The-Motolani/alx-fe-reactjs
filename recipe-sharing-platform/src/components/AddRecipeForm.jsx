@@ -87,7 +87,7 @@ export default function AddRecipeForm() {
         {/* Steps */}
         <label className="block mb-2 font-semibold">Preparation Steps</label>
         <textarea
-          className="w-full border border-gray-300 rounded p-2 h-32 mb-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+          className="w-full border border-gray-300 rounded md:rounded-xl p-2 h-32 mb-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
           placeholder="Add each step on a new line"
           value={steps}
           onChange={(e) => setSteps(e.target.value)}
