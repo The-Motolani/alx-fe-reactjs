@@ -15,10 +15,10 @@ useEffect(() => {
     return(
         <>
         <div className="min-h-screen bg-gray-100 p-6">
-            <h1 className="text-3xl font-bold text-center mb-8">
+            <h1 className="text-3xl font-bold text-center mb-10">
                 Recipe Sharing Platform
             </h1>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 mb-10">
                 {recipes.map((recipe) => (
                     <motion.div
                     key={recipe.id}
@@ -36,11 +36,13 @@ useEffect(() => {
                     className="inline-block mt-3 text-blue-600 font-medium hover:underline"
                     >View Details
                     </Link>
-                    </motion.div>
+                    </motion.div>))}
                     
-                ))}
-
             </div>
+            <Link to="/add-recipe" 
+                    className="text-blue-600 hover:underline hover:shadow-2xl items-centre">
+                        <button>Add a Recipe</button>
+                    </Link>
         </div>
         </>
     );
