@@ -24,9 +24,13 @@ export default function RegistrationForm() {
         console.log(inputData);
 
         const { username, email, password } = inputData;
-        if (!username || !email || !password) {
-            setError("All fields are required.");
-            return;
+        if (!username)
+        {
+            setError('Username is required')
+        } else if (!email) {
+            setError("Email is required")
+        } else if (!password) {
+            setError("Password is required")
         }
         setError("");
     }
