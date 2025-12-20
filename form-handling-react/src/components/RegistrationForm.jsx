@@ -30,7 +30,7 @@ export default function RegistrationForm() {
         }
         setError("");
     }
-
+    const { username, email, password } = inputData;
     return (
         <div>
             <form onSubmit={handleSubmit}>
@@ -42,7 +42,7 @@ export default function RegistrationForm() {
                         type="text"
                         name="username"
                         placeholder="Username"
-                        value={inputData.username}
+                        value={username}
                         onChange={handleChange}
                         required
                     />
@@ -53,7 +53,7 @@ export default function RegistrationForm() {
                         type="email"
                         name="email"
                         placeholder="Email"  
-                        value={inputData.email}
+                        value={email}
                         onChange={handleChange}
                         required    
                     />
@@ -64,7 +64,7 @@ export default function RegistrationForm() {
                         type="password"
                         name="password"
                         placeholder="Password"
-                        value={inputData.password}
+                        value={password}
                         onChange={handleChange}
                         required
                     />
