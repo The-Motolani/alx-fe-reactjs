@@ -9,7 +9,7 @@ export default function RegistrationForm() {
         email: "",
         password: "",
     });
-    const [error, setError] = useState("");
+    const [errors, setErrors] = useState("");
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -26,13 +26,13 @@ export default function RegistrationForm() {
         const { username, email, password } = inputData;
         if (!username)
         {
-            setError('Username is required')
+            setErrors('Username is required')
         } else if (!email) {
-            setError("Email is required")
+            setErrors("Email is required")
         } else if (!password) {
-            setError("Password is required")
+            setErrors("Password is required")
         }
-        setError("");
+        setErrors("");
     }
     const { username, email, password } = inputData;
     return (
